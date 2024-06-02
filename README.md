@@ -4,7 +4,7 @@ Visit us on [GitHub](https://github.com/dosyago/documentspark)
 
 ## The Future of Secure Document Viewing is Here! 🎉
 
-Convert documents into spectacular images for each page, and view them securely in your browser! No downloads, no third-party apps—just pure, joyful, **Zero Trust** goodness! Proudly part of the [BrowserBox Pro cloud browser product](https://github.com/BrowserBox/BrowserBox) by [DOSAYGO](https://dosyago.com).
+Convert documents into spectacular images for each page, and view them securely in your browser! No downloads, no third-party apps—just pure, joyful, **Zero Trust** goodness! Proudly part of the [BrowserBox Pro cloud browser product](https://github.com/dosyago/BrowserBoxPro) by Dosyago.
 
 ---
 
@@ -73,7 +73,6 @@ We recommend a beefy machine with at least 4 cores and 8 GB RAM for a spellbindi
 
 ## 🌟 Special Thanks 🌟
 
-- [MuPDF](https://github.com/ArtifexSoftware/mupdf)
 - [ImageMagick](https://github.com/ImageMagick/ImageMagick)
 - [Ghostscript](https://git.ghostscript.com/)
 - [LibreOffice](https://www.libreoffice.org/)
@@ -84,7 +83,7 @@ We recommend a beefy machine with at least 4 cores and 8 GB RAM for a spellbindi
 
 ## 📜 License 📜
 
-AGPL-3.0. For custom licensing options, email us at [hello@dosyago.com](mailto:hello@dosyago.com).
+Non-commercial (Polyform Noncommercial 1.0) use or commercial licenses purchasable. For custom licensing options, email us at [hello@dosyago.com](mailto:hello@dosyago.com).
 
 ---
 
