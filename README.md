@@ -1,6 +1,8 @@
 # 🌈 Chai: Your Zero Trust Document Viewer! 🌟
 
-Visit us on [GitHub](https://github.com/dosyago/documentspark)
+Visit us on [GitHub](https://github.com/dosyago/chai)
+
+*Please note: right now this repository is mirroring the version of chai used in [BrowserBox](https://github.com/BrowserBox/BrowserBox) and has not been tested to run separate to BrowserBox. The goal eventually is to create an isomorphic chai that mirrors BrowserBox's latest changes while continuing to operate independently when not configured nor run as part of BrowserBox remote browser isolation system.*
 
 ## The Future of Secure Document Viewing is Here! 🎉
 
