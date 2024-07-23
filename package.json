@@ -1,6 +1,6 @@
 {
   "name": "@browserbox/chai",
-  "version": "8.1.1",
+  "version": "8.1.2",
   "type": "module",
   "description": "chai - convert your documents to images by way of PDF",
   "main": "src/index.js",
@@ -11,9 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dosyago/documentspark.git"
+    "url": "git+https://github.com/dosyago/chai.git"
   },
   "keywords": [
+    "documentspark",
+    "chai",
+    "browserbox",
     "secure-document-gateway",
     "pdf",
     "cdr",
