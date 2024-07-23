@@ -11,9 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dosyago/documentspark.git"
+    "url": "git+https://github.com/dosyago/chai.git"
   },
   "keywords": [
+    "documentspark",
+    "chai",
+    "browserbox",
     "secure-document-gateway",
     "pdf",
     "cdr",
