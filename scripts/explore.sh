@@ -1,5 +1,9 @@
 #!/bin/bash
-set -euo pipefail
+
+#set -euo pipefail
+
+#set -x
+
 IFS=$'\n\t'
 
 # Cleanup and error message in case of unexpected errors
@@ -14,7 +18,9 @@ trap 'handle_error' ERR
 # Default environment variable values
 : "${MAX_ARCHIVE_SIZE:=104857600}"
 : "${MAX_EXECUTION_TIME:=30}"
-: "${EXTRACTION_ROOT:=./archives}"
+: "${EXTRACTION_ROOT:=${CHAI_PATH}/archives}"
+
+mkdir -p "$EXTRACTION_ROOT"
 
 # Function to check and install required utilities
 install_guard() {
@@ -23,7 +29,7 @@ install_guard() {
   echo "install name: $install_name"
   if ! command -v "$utility_name" > /dev/null; then
     echo "Error: $utility_name is not installed. Installing..." >&2
-    sudo apt install -y "$install_name"
+    sudo $APT install -y "$install_name"
     if ! command -v "$utility_name" > /dev/null; then
       echo "Error: Could not install $utility_name..." >&2
       exit 1
@@ -46,36 +52,69 @@ decompress_anything() {
   case "$mime_type" in
     "application/gzip")
       install_guard "gzip"
+      # Check the integrity of the gzip archive
       gzip -t "$archive_path" || { echo "Error: Archive integrity check failed."; exit 1; }
-      tar xzf "$archive_path" -C "$extraction_directory"
+
+      # Check if the file is a tar.gz archive and extract accordingly
+      if [[ "$archive_path" == *.tar.gz ]]; then
+        # It's a tar.gz file, extract it
+        tar xzf "$archive_path" -C "$extraction_directory"
+      else
+        # It's likely just a .gz file, decompress it
+        gunzip "$archive_path"
+        # Remove the .gz extension to get the path of the decompressed file
+        gunzipped_path="${archive_path%.gz}"
+        # Move the decompressed file to the extraction directory
+        mv "$gunzipped_path" "$extraction_directory"
+      fi
       ;;
     "application/x-bzip2")
       install_guard "bzip2"
       bzip2 -t "$archive_path" || { echo "Error: Archive integrity check failed."; exit 1; }
-      tar xjf "$archive_path" -C "$extraction_directory"
+      if [[ "$archive_path" == *.tar.bz2 ]]; then
+        tar xjf "$archive_path" -C "$extraction_directory"
+      else
+        bzip2 -d "$archive_path"
+        mv "${archive_path%.bz2}" "$extraction_directory"
+      fi
       ;;
     "application/zip")
       install_guard "unzip"
       unzip -tq "$archive_path" || { echo "Error: Archive integrity check failed."; exit 1; }
-      unzip -d "$extraction_directory" "$archive_path"
+      unzip -o -d "$extraction_directory" "$archive_path"
       ;;
     "application/x-xz")
       install_guard "xz"
       xz -t "$archive_path" || { echo "Error: Archive integrity check failed."; exit 1; }
-      tar xJf "$archive_path" -C "$extraction_directory"
+      if [[ "$archive_path" == *.tar.xz ]]; then
+        tar xJf "$archive_path" -C "$extraction_directory"
+      else
+        xz -d "$archive_path"
+        mv "${archive_path%.xz}" "$extraction_directory"
+      fi
       ;;
     "application/x-lzma")
       install_guard "xz"
       xz -t "$archive_path" || { echo "Error: Archive integrity check failed."; exit 1; }
-      tar --lzma -xf "$archive_path" -C "$extraction_directory"
+      if [[ "$archive_path" == *.tar.lzma ]]; then
+        tar --lzma -xf "$archive_path" -C "$extraction_directory"
+      else
+        xz --format=lzma -d "$archive_path"
+        mv "${archive_path%.lzma}" "$extraction_directory"
+      fi
       ;;
     "application/x-lz4")
       install_guard "lz4"
       lz4 -t "$archive_path" || { echo "Error: Archive integrity check failed."; exit 1; }
-      tar --lz4 -xf "$archive_path" -C "$extraction_directory"
+      if [[ "$archive_path" == *.tar.lz4 ]]; then
+        tar --lz4 -xf "$archive_path" -C "$extraction_directory"
+      else
+        lz4 -d "$archive_path" "${archive_path%.lz4}"
+        mv "${archive_path%.lz4}" "$extraction_directory"
+      fi
       ;;
     "application/x-rar")
-      install_guard "unar"
+      install_guard "unrar"
       unrar t "$archive_path" >/dev/null 2>&1 || { echo "Error: Archive integrity check failed."; exit 1; }
       unrar x "$archive_path" "$extraction_directory"
       ;;
@@ -102,7 +141,7 @@ extract_securely() {
 
   # Estimate the uncompressed size and exit if too large
   local estimated_size=$(estimate_uncompressed_size "$archive_path")
-  if [ "$estimated_size" -gt "$MAX_ARCHIVE_SIZE" ]; then
+  if [[ "$estimated_size" -gt "$MAX_ARCHIVE_SIZE" ]]; then
     echo "Error: Estimated uncompressed size exceeds maximum limit." >&2
     exit 1
   fi
